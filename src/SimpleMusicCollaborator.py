@@ -2,7 +2,8 @@
 import math
 import rtmidi
 import pygame
-import multiprocessing
+import tkinter as tk
+import tkinter.ttk as ttk
 from mido import Message, MidiFile, MidiTrack, MetaMessage, bpm2tempo, second2tick
 
 def record() -> None:
@@ -29,7 +30,7 @@ def record() -> None:
         mid.save("test.mid")
         raise SystemExit
 
-def record_message(event, deltatime) -> None:
+def record_message(event, data) -> None:
     '''
     Records midi messages from rtmidi.
     
@@ -71,64 +72,83 @@ def play_music(music_file):
         # check if playback has finished
         clock.tick(10)
 
+def record_button():
+    if record_btn["text"] == "Record":
+        print(1)
+        record_btn.config(text="Stop Recording")
+
+        global mid
+        global track
+        global tempo
+        global midiin
+        global recorded
+
+        recorded= True
+
+        # set tempo and pulse per quarter
+        tempo = 120
+        ppq = 480
+
+        # create midi file
+        midiin = rtmidi.MidiIn()
+        mid = MidiFile()
+        track = MidiTrack()
+        mid.tracks.append(
+            track
+        )
+
+        # set tempo
+        track.append(MetaMessage("set_tempo", tempo=bpm2tempo(tempo)))
+        tempo = bpm2tempo(tempo)
+
+        # start recording song
+        record()
+
+    else:
+        record_btn.config(text="Record")
+        mid.save("test.mid")
+        midiin.close_port()
+
+def playback():
+    
+    if not recorded:
+        # TODO: add pop-up box here
+        print("Nothing to playback.")
+    else:
+        # play midi file
+        freq = 44100    # audio CD quality
+        bitsize = -16   # unsigned 16 bit
+        channels = 2    # 1 is mono, 2 is stereo
+        buffer = 1024    # number of samples
+        pygame.mixer.init(freq, bitsize, channels, buffer)
+
+        # optional volume 0 to 1.0
+        pygame.mixer.music.set_volume(0.8)
+
+        # play song
+        play_music("test.mid")
+
 if __name__ == "__main__":
 
-    x = None
     recorded = False
 
-    while x != "3":
+    window = tk.Tk()
+    window.title("Test Window")
+    window.geometry('500x600')
 
-        print("Welcome! Please select an option: \n")
-        print("1. Record Song\n2.Playback Song\n3.Exit\n")
+    title = ttk.Label(window, text="Simple Music Collaborator", font=("Arial Bold", 36))
+    title.pack(side='top')
 
-        x = input("Enter input: ")
+    record_btn = tk.Button(window, text="Record", command=record_button, bg='#be2538', width=16, height=3, font=("Arial", 24))
+    record_btn.place(relx=0.5, rely=0.2, anchor='center')
 
-        if x == "1":
+    playback_btn = tk.Button(window, text="Playback Recording", command=playback, width=16, height=3, font=("Arial", 24))
+    playback_btn.place(relx=0.5, rely=0.4, anchor='center')
 
-            # set tempo and pulse per quarter
-            tempo = 120
-            ppq = 480
+    create_btn = tk.Button(window, text="Generate Music", width=16, height=3, font=("Arial", 24))
+    create_btn.place(relx=0.5, rely=0.6, anchor='center')
 
-            # create midi file
-            midiin = rtmidi.MidiIn()
-            mid = MidiFile()
-            track = MidiTrack()
-            mid.tracks.append(
-                track
-            )
+    create_btn = tk.Button(window, text="Play Generated Music", width=16, height=3, font=("Arial", 24))
+    create_btn.place(relx=0.5, rely=0.8, anchor='center')
 
-            # set tempo
-            track.append(MetaMessage("set_tempo", tempo=bpm2tempo(tempo)))
-            tempo = bpm2tempo(tempo)
-
-            # start recording song
-            record()
-
-            # pressing enter stops recording
-            input("Press enter to stop recording: ")
-
-            # save file
-            mid.save("test.mid")
-            recorded = True
-            
-        elif x == "2":
-            if not recorded:
-                print("You have not recorded a track yet.")
-            else:
-                # play midi file
-                freq = 44100    # audio CD quality
-                bitsize = -16   # unsigned 16 bit
-                channels = 2    # 1 is mono, 2 is stereo
-                buffer = 1024    # number of samples
-                pygame.mixer.init(freq, bitsize, channels, buffer)
-
-                # optional volume 0 to 1.0
-                pygame.mixer.music.set_volume(0.8)
-
-                # play song
-                play_music("test.mid")
-        
-        elif x == '3':
-            break
-        else:
-            print(f'{x} is not a valid input number.')
+    window.mainloop()
