@@ -1,5 +1,7 @@
 
+import os
 import math
+import shutil
 import rtmidi
 import pygame
 import tkinter as tk
@@ -8,6 +10,9 @@ import tkinter.ttk as ttk
 
 from mido import Message, MidiFile, MidiTrack, MetaMessage, bpm2tempo, second2tick
 from generate_melody import MagentaMusicTransformer
+
+if not os.path.exists("saved"):
+    os.mkdir("saved")
 
 def record() -> None:
     '''
@@ -115,7 +120,6 @@ def record_button():
 def playback():
     
     if not recorded:
-        # TODO: add pop-up box here
         print("Nothing to playback.")
         tk.messagebox.showinfo("Attention", "You have not recorded anything.")
     else:
@@ -162,6 +166,21 @@ def playback_generated():
         # play song
         play_music("generated.mid")
 
+def save_song():
+
+    if not generated:
+        print("Nothing has been generated yet.")
+        tk.messagebox.showinfo("Attention", "You have not generated anything to save.")
+    else:
+        name = song_name.get("1.0", "end-1c")
+        if name == "":
+            print("No name given")
+            tk.messagebox.showinfo("Attention", "You have not given the song a name.")
+        else:
+            shutil.copy("generated.mid", f'saved/{name}.mid')
+            print("song saved")
+            tk.messagebox.showinfo("Success", "Song Saved! :)")
+
 
 if __name__ == "__main__":
 
@@ -171,21 +190,30 @@ if __name__ == "__main__":
 
     window = tk.Tk()
     window.title("Test Window")
-    window.geometry('500x600')
+    window.geometry('800x900')
 
     title = ttk.Label(window, text="Simple Music Collaborator", font=("Arial Bold", 36))
     title.pack(side='top')
 
-    record_btn = tk.Button(window, text="Record", command=record_button, bg='#be2538', width=16, height=3, font=("Arial", 24))
-    record_btn.place(relx=0.5, rely=0.2, anchor='center')
+    record_btn = tk.Button(window, text="Record", command=record_button, bg='#be2538', width=19, height=3, font=("Arial", 24))
+    record_btn.place(relx=0.5, rely=0.15, anchor='center')
 
-    playback_btn = tk.Button(window, text="Playback Recording", command=playback, width=16, height=3, font=("Arial", 24))
-    playback_btn.place(relx=0.5, rely=0.4, anchor='center')
+    playback_btn = tk.Button(window, text="Playback Recording", command=playback, bg='#5ed33e', width=19, height=3, font=("Arial", 24))
+    playback_btn.place(relx=0.5, rely=0.3, anchor='center')
 
-    create_btn = tk.Button(window, text="Generate Music", command=generate_music, width=16, height=3, font=("Arial", 24))
-    create_btn.place(relx=0.5, rely=0.6, anchor='center')
+    generate_btn = tk.Button(window, text="Generate Music", command=generate_music, width=19, height=3, font=("Arial", 24))
+    generate_btn.place(relx=0.5, rely=0.45, anchor='center')
 
-    create_btn = tk.Button(window, text="Play Generated Music", command=playback_generated, width=16, height=3, font=("Arial", 24))
-    create_btn.place(relx=0.5, rely=0.8, anchor='center')
+    playback_generated_btn = tk.Button(window, text="Play Generated Music", command=playback_generated, width=19, height=3, font=("Arial", 24))
+    playback_generated_btn.place(relx=0.5, rely=0.6, anchor='center')
+
+    label = tk.Label(window, text="Enter song name:", font=("Arial Bold", 16))
+    label.place(relx=0.5, rely=0.7, anchor='center')
+
+    song_name = tk.Text(window, height=1, width=19, font=('Arial', 14))
+    song_name.place(relx=0.5, rely=0.75, anchor='center')
+
+    save_btn = tk.Button(window, text="Save Song", command=save_song, width=19, height=3, font=("Arial", 24))
+    save_btn.place(relx=0.5, rely=0.85, anchor='center')
 
     window.mainloop()
