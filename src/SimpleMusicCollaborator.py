@@ -21,8 +21,8 @@ def record() -> None:
         if ports:
             for i in ports:
                 print(midiin.get_port_name(i))
-            print("Opening port 0!") 
-            midiin.open_port(0)
+            print(f"Opening port {i}!") 
+            midiin.open_port(i)
             midiin.set_callback(record_message)
         else:
             print('NO MIDI INPUT PORTS!')
