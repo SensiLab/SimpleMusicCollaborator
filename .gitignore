@@ -1,2 +1,5 @@
 .DS_Store
 src/*.mid
+model/
+src/output/
+src/__pycache__
