@@ -5,7 +5,7 @@ This application is a simple music collaborator powered by the Magenta music tra
 Code to run music transformer orignally from the following Google Music Transformer [notebook](https://colab.research.google.com/notebooks/magenta/piano_transformer/piano_transformer.ipynb).
 
 Porting of notebook to script from the following [repo](https://github.com/Elvenson/piano_transformer).
-This project adds to the above by creating a conditional music transformer class that can be used in an interactive application.
+Our project adds to this work by creating a conditional music transformer class that can be used in an interactive application.
 
 ## Installation
 
