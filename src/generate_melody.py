@@ -6,7 +6,7 @@
 # Created transformer class
 
 import os
-import time
+import timeit
 
 import tensorflow.compat.v1 as tf  # pylint: disable=import-error
 
@@ -45,12 +45,13 @@ class MagentaMusicTransformer:
     
     def generate(self, melody_path: str):
 
+        start = timeit.default_timer()
         melody_conditioned_encoders = self.problem.get_feature_encoders()
         melody_ns = utils.get_melody_ns(melody_path)
         inputs = melody_conditioned_encoders['inputs'].encode_note_sequence(melody_ns)
 
-        date_and_time = time.strftime('%Y-%m-%d_%H%M%S')
-        base_name = '%s_%s-*-of-%03d.mid' % ('melody', date_and_time, self.num_samples)
+        # date_and_time = time.strftime('%Y-%m-%d_%H%M%S')
+        # base_name = '%s_%s-*-of-%03d.mid' % ('melody', date_and_time, self.num_samples)
 
         for i in range(self.num_samples):
             utils.LOGGER.info('Generating sample %d' % i)
@@ -70,7 +71,7 @@ class MagentaMusicTransformer:
                 sample_ids,
                 encoder=melody_conditioned_encoders['targets'])
             accompaniment_ns = utils.mm.midi_file_to_note_sequence(midi_filename)
-            utils.mm.sequence_proto_to_midi_file(accompaniment_ns, base_name.replace('*', '%03d' % i))
+            utils.mm.sequence_proto_to_midi_file(accompaniment_ns, "generated.mid")
     
 
 if __name__ == "__main__":

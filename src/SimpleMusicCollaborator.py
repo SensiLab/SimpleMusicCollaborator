@@ -4,7 +4,9 @@ import rtmidi
 import pygame
 import tkinter as tk
 import tkinter.ttk as ttk
+
 from mido import Message, MidiFile, MidiTrack, MetaMessage, bpm2tempo, second2tick
+from generate_melody import MagentaMusicTransformer
 
 def record() -> None:
     '''
@@ -128,9 +130,32 @@ def playback():
         # play song
         play_music("test.mid")
 
+def generate_music():
+
+    music_transformer.generate("test.mid")
+
+    return
+
+def playback_generated():
+
+        # play midi file
+        freq = 44100    # audio CD quality
+        bitsize = -16   # unsigned 16 bit
+        channels = 2    # 1 is mono, 2 is stereo
+        buffer = 1024    # number of samples
+        pygame.mixer.init(freq, bitsize, channels, buffer)
+
+        # optional volume 0 to 1.0
+        pygame.mixer.music.set_volume(0.8)
+
+        # play song
+        play_music("generated.mid")
+
+
 if __name__ == "__main__":
 
     recorded = False
+    music_transformer = MagentaMusicTransformer("../model/melody_conditioned_model_16.ckpt")
 
     window = tk.Tk()
     window.title("Test Window")
@@ -145,10 +170,10 @@ if __name__ == "__main__":
     playback_btn = tk.Button(window, text="Playback Recording", command=playback, width=16, height=3, font=("Arial", 24))
     playback_btn.place(relx=0.5, rely=0.4, anchor='center')
 
-    create_btn = tk.Button(window, text="Generate Music", width=16, height=3, font=("Arial", 24))
+    create_btn = tk.Button(window, text="Generate Music", command=generate_music, width=16, height=3, font=("Arial", 24))
     create_btn.place(relx=0.5, rely=0.6, anchor='center')
 
-    create_btn = tk.Button(window, text="Play Generated Music", width=16, height=3, font=("Arial", 24))
+    create_btn = tk.Button(window, text="Play Generated Music", command=playback_generated, width=16, height=3, font=("Arial", 24))
     create_btn.place(relx=0.5, rely=0.8, anchor='center')
 
     window.mainloop()
