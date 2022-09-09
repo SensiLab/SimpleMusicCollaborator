@@ -3,6 +3,7 @@ import math
 import rtmidi
 import pygame
 import tkinter as tk
+import tkinter.messagebox
 import tkinter.ttk as ttk
 
 from mido import Message, MidiFile, MidiTrack, MetaMessage, bpm2tempo, second2tick
@@ -116,6 +117,7 @@ def playback():
     if not recorded:
         # TODO: add pop-up box here
         print("Nothing to playback.")
+        tk.messagebox.showinfo("Attention", "You have not recorded anything.")
     else:
         # play midi file
         freq = 44100    # audio CD quality
@@ -131,13 +133,22 @@ def playback():
         play_music("test.mid")
 
 def generate_music():
+    global generated
 
-    music_transformer.generate("test.mid")
+    if not recorded:
+        print("Nothing has been recorded yet.")
+        tk.messagebox.showinfo("Attention", "You have not recorded anything.")
+    else:
+        generated = True
+        music_transformer.generate("test.mid")
 
-    return
 
 def playback_generated():
 
+    if not generated:
+        print("Nothing has been generated yet.")
+        tk.messagebox.showinfo("Attention", "You have not generated anything.")
+    else:
         # play midi file
         freq = 44100    # audio CD quality
         bitsize = -16   # unsigned 16 bit
@@ -155,6 +166,7 @@ def playback_generated():
 if __name__ == "__main__":
 
     recorded = False
+    generated = False
     music_transformer = MagentaMusicTransformer("../model/melody_conditioned_model_16.ckpt")
 
     window = tk.Tk()
