@@ -1,6 +1,6 @@
 # Simple Music Collaborator
 
-This application is a simple music collaborator powered by the Magenta music transformer. The application can record midi input from the user and use the transformer to generate something new in a similar style. This application was designed to be used in a workshop to give musicians/composers a chance to work with an artificial collaborator so we can better understand what they would want in a co-creative system.
+This application is a simple music collaborator powered by the Magenta music transformer. The application can record midi input from the user and use the transformer to generate something new in a similar style. This application was designed to be used in a workshop to give musicians/composers a chance to work with an artificial collaborator so we can better understand what they would want with a co-creative system.
 
 Code to run music transformer orignally from the following Google Music Transformer [notebook](https://colab.research.google.com/notebooks/magenta/piano_transformer/piano_transformer.ipynb).
 
