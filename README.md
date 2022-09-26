@@ -14,6 +14,8 @@ You need to install [Magenta](https://github.com/tensorflow/magenta) package (su
 pip install magenta==1.3.1
 ```
 
+Please look through the requirements.txt file and ensure you utilise libraries with same version. In particular, ensure the version of tensorflow-datasets and pygame are the same to avoid unexpected error messages.
+
 You also need to install `google cloud sdk` to get `Music Transformer` pre-trained model on cloud bucket. To get Google Cloud
 SDK please follow this [installation guide](https://cloud.google.com/sdk/docs/downloads-versioned-archives).
 
